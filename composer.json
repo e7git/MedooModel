@@ -1,0 +1,20 @@
+{
+    "name": "e7git/MedooModel",
+    "type": "framework",
+    "authors": [
+        {
+            "name": "e7git",
+            "email": "e7git@outlook.com"
+        }
+    ],
+    "license": "MIT",  
+    "require": {
+        "php": ">=7.2.0",
+        "catfan/medoo": "2.1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "MedooModel\\": "src"
+        }
+    }
+}
