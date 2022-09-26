@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace Metoo;
 
-abstract class Model
+class Model
 {
 
     private $medooTable = null;                     // Table
 
-    abstract static function tableName(): string;   // 定义表名
+    /**
+     * 定义表名
+     * @return string
+     */
+    public static function tableName(): string
+    {
+        return '';
+    }
 
     /**
      * 针对表进行自定义数据库配置
@@ -138,7 +145,7 @@ abstract class Model
 
 }
 
-final class Table extends Selector
+class Table extends Selector
 {
 
     protected $table = '';      // 表名
@@ -874,7 +881,7 @@ class Selector
 
 }
 
-final class Connection
+class Connection
 {
 
     public static $connectionMap = [];      // Connection实例映射
