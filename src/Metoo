@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MedooModel;
+namespace Metoo;
 
-abstract class MedooModel
+abstract class Metoo
 {
 
     private $medooTable = null;                     // MedooTable
