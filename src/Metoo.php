@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Metoo;
 
-abstract class Metoo
+abstract class MedooModel
 {
 
     private $medooTable = null;                     // MedooTable
