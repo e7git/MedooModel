@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace E7git\Metoo;
+namespace Sayhey\SSMedoo;
 
 class Model
 {
