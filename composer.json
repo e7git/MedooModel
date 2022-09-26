@@ -1,5 +1,5 @@
 {
-    "name": "e7git/medoo-model",
+    "name": "e7git/metoo",
     "type": "framework",
     "authors": [
         {
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MedooModel\\": "src"
+            "Metoo\\": "src"
         }
     }
 }
