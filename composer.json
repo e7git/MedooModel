@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "E7git\Metoo\\": "src/"
+            "E7git\\Metoo\\": "src/"
         }
     }
 }
