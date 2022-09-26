@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Metoo;
 
-abstract class MedooModel
+abstract class Model
 {
 
-    private $medooTable = null;                     // MedooTable
+    private $medooTable = null;                     // Table
 
     abstract static function tableName(): string;   // 定义表名
 
@@ -15,7 +15,7 @@ abstract class MedooModel
      * 针对表进行自定义数据库配置
      * @return array
      */
-    public static function getMedooConnectionConfig(): array
+    public static function getConnectionConfig(): array
     {
         return [];
     }
@@ -25,7 +25,7 @@ abstract class MedooModel
      */
     public function __construct()
     {
-        $this->medooTable = new MedooTable(static::class);
+        $this->medooTable = new Table(static::class);
     }
 
     /**
@@ -61,9 +61,9 @@ abstract class MedooModel
 
     /**
      * 初始化db
-     * @return MedooTable
+     * @return Table
      */
-    public static function db(): MedooTable
+    public static function db(): Table
     {
         return (new static())->medooTable;
     }
@@ -110,7 +110,7 @@ abstract class MedooModel
     public static function beginTransaction(): bool
     {
         if (1 === ++$this->transactions) {
-            return MedooConnection::getInstance(static::getMedooConnectionConfig())->medoo->pdo->beginTransaction();
+            return Connection::getInstance(static::getConnectionConfig())->medoo->pdo->beginTransaction();
         }
     }
 
@@ -121,7 +121,7 @@ abstract class MedooModel
     public static function rollBack(): bool
     {
         if (0 === --$this->transactions) {
-            return MedooConnection::getInstance(static::getMedooConnectionConfig())->medoo->pdo->rollBack();
+            return Connection::getInstance(static::getConnectionConfig())->medoo->pdo->rollBack();
         }
     }
 
@@ -132,18 +132,18 @@ abstract class MedooModel
     public static function commit(): bool
     {
         if (0 === --$this->transactions) {
-            return MedooConnection::getInstance(static::getMedooConnectionConfig())->medoo->pdo->commit();
+            return Connection::getInstance(static::getConnectionConfig())->medoo->pdo->commit();
         }
     }
 
 }
 
-final class MedooTable extends MedooSelector
+final class Table extends Selector
 {
 
     protected $table = '';      // 表名
     protected $alias = '';      // 表别名
-    private $db = null;         // MedooConnection
+    private $db = null;         // Connection
     private $data = [];         // 模型数据
     private $diffData = [];     // 待变更数据
 
@@ -158,7 +158,7 @@ final class MedooTable extends MedooSelector
             trigger_error('tableName can not be empty', E_USER_ERROR);
         }
 
-        $this->db = MedooConnection::getInstance($modelClass::getMedooConnectionConfig());
+        $this->db = Connection::getInstance($modelClass::getConnectionConfig());
         $this->alias = $alias;
     }
 
@@ -460,7 +460,7 @@ final class MedooTable extends MedooSelector
 
 }
 
-class MedooSelector
+class Selector
 {
 
     protected $join = [];             // 查询联表
@@ -874,11 +874,11 @@ class MedooSelector
 
 }
 
-final class MedooConnection
+final class Connection
 {
 
-    public static $connectionMap = [];      // MedooConnection实例映射
-    public static $defaultHash = '';        // MedooConnection默认实例索引
+    public static $connectionMap = [];      // Connection实例映射
+    public static $defaultHash = '';        // Connection默认实例索引
     public static $medooMap = [];           // Medoo实例映射
     public $medoo = null;                   // Medoo实例
     public $tableSetting = [];              // 自定义表配置
@@ -912,38 +912,38 @@ final class MedooConnection
     public static function init(array $config): void
     {
         if (!!self::$defaultHash) {
-            trigger_error('MedooConnection repet init', E_USER_ERROR);
+            trigger_error('Connection repet init', E_USER_ERROR);
         }
 
         self::$defaultHash = md5(json_encode($config));
 
-        MedooConnection::$connectionMap[self::$defaultHash] = new MedooConnection($config);
+        Connection::$connectionMap[self::$defaultHash] = new Connection($config);
     }
 
     /**
      * 获取实例
-     * @return MedooConnection
+     * @return Connection
      */
-    public static function getInstance(array $config = []): MedooConnection
+    public static function getInstance(array $config = []): Connection
     {
         if (!self::$defaultHash) {
-            trigger_error('MedooConnection not init', E_USER_ERROR);
+            trigger_error('Connection not init', E_USER_ERROR);
         }
 
         if (!$config) {
-            return MedooConnection::$connectionMap[self::$defaultHash];
+            return Connection::$connectionMap[self::$defaultHash];
         }
 
         $hash = md5(json_encode($config));
-        foreach (MedooConnection::$instances as $instance) {
+        foreach (Connection::$instances as $instance) {
             if ($instance->hash === $hash) {
                 return $instance;
             }
         }
 
-        MedooConnection::$instances[] = new MedooConnection($config);
+        Connection::$instances[] = new Connection($config);
 
-        return end(MedooConnection::$instances);
+        return end(Connection::$instances);
     }
 
 }
